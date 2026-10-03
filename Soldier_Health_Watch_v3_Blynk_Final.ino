@@ -1,8 +1,3 @@
-/*
- Soldier Health Watch v2.0
- Generated project skeleton based on latest conversation.
- Update and extend as needed.
-*/
 
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
