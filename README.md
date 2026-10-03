@@ -1,27 +1,44 @@
 # Soldier Health Monitoring System
 
-An ESP32-based prototype designed to demonstrate basic health monitoring and emergency communication concepts for field personnel. The system monitors heart rate and temperature, provides predefined status alerts through a keypad, and uses Blynk IoT for mobile monitoring and alert communication.
+An ESP32-based prototype designed to demonstrate basic health monitoring and emergency communication concepts for field personnel. The system monitors heart rate and temperature, displays predefined status messages via a keypad, and sends sensor data and system status to a mobile dashboard via Blynk IoT.
 
 ## Features
 
 - Heart-rate monitoring using a pulse sensor
 - Temperature monitoring using a DHT11 sensor
-- 16x2 I2C LCD for displaying health information
+- 16x2 I2C LCD for local health information
 - 4x4 keypad for predefined status and alert messages
-- Emergency button with LED indication
-- Blynk IoT integration for mobile monitoring and alerts
-- Predefined status and emergency alerts such as:
-  - Need Backup
-  - Injured
-  - Enemy Seen
-  - Mission Done
-  - Need Medic
-  - Low Ammo
-  - Need Supply
-  - SOS Alert
-  - Safe
-  - Returning
-  - Cancel Alert
+- Emergency button
+- Emergency LED indication
+- Wi-Fi connectivity
+- Blynk IoT integration for remote monitoring
+- Real-time transmission of:
+  - Heart rate
+  - Temperature
+  - System status
+  - Last selected status/alert message
+  - Emergency button state
+
+## Predefined Keypad Messages
+
+| Key | Message |
+|---|---|
+| 1 | Need Backup |
+| 2 | Injured |
+| 3 | Enemy Seen |
+| 4 | Mission Done |
+| 5 | Need Medic |
+| 6 | Low Ammo |
+| 7 | Need Supply |
+| 8 | Safe |
+| 9 | Returning |
+| 0 | Cancel Alert |
+| * | SOS Alert |
+| # | Status Sent |
+| A | Alpha |
+| B | Bravo |
+| C | Charlie |
+| D | Delta |
 
 ## Hardware
 
@@ -57,9 +74,39 @@ An ESP32-based prototype designed to demonstrate basic health monitoring and eme
 
 **LCD I2C Address:** `0x27`
 
+## Blynk IoT Integration
+
+The ESP32 connects to a Wi-Fi network and communicates with the Blynk IoT platform.
+
+The following virtual pins are used:
+
+| Virtual Pin | Data |
+|---|---|
+| V0 | Heart rate (BPM) |
+| V1 | Temperature |
+| V2 | System status |
+| V3 | Last status/alert message |
+| V4 | Emergency button state |
+
+The system updates the Blynk dashboard approximately once per second.
+
+## How It Works
+
+The ESP32 continuously reads the pulse sensor and DHT11 temperature sensor.
+
+The pulse signal is processed to detect pulse peaks and estimate heart rate. A simple smoothing method is used to reduce rapid fluctuations in the calculated BPM.
+
+Temperature readings from the DHT11 are also smoothed before being displayed.
+
+The 16x2 I2C LCD displays the current heart rate and temperature.
+
+The 4x4 keypad allows the user to select predefined status and alert messages. These messages are displayed locally and stored as the latest system message, which is then transmitted to Blynk.
+
+The emergency button activates the emergency LED and changes the system status from `NORMAL` to `EMERGENCY`. The emergency state is also transmitted to Blynk.
+
 ## Software
 
-The prototype was developed using the Arduino IDE with an ESP32 board.
+The prototype was developed using the Arduino IDE and ESP32.
 
 ### Libraries Used
 
@@ -67,47 +114,35 @@ The prototype was developed using the Arduino IDE with an ESP32 board.
 - LiquidCrystal_I2C
 - Keypad
 - DHTesp
-- Blynk library
-
-## How It Works
-
-The ESP32 continuously reads data from the pulse sensor and DHT11 temperature sensor.
-
-The estimated heart rate and temperature are displayed on the 16x2 I2C LCD.
-
-The 4x4 keypad allows the user to select predefined status and alert messages. An emergency button provides a dedicated emergency indication through the LED and connected monitoring system.
-
-Blynk IoT is used to provide mobile monitoring and communicate selected alerts to a smartphone.
-
-## Blynk IoT Integration
-
-The system connects the ESP32 to the Blynk IoT platform, allowing sensor information and selected alerts to be monitored remotely through a mobile device.
-
-This demonstrates how an embedded health-monitoring prototype can be extended from a standalone device into an IoT-enabled system.
+- WiFi
+- WiFiClient
+- BlynkSimpleEsp32
 
 ## Prototype Limitation
 
 This project is an educational embedded-systems prototype. The sensors, algorithms, communication methods, and hardware used are not intended to replace certified medical, safety, or military equipment.
 
-The heart-rate measurement and temperature sensing are intended for demonstration purposes and may require improved sensing hardware, signal processing, calibration, and validation for reliable real-world applications.
+The heart-rate measurement is based on threshold-based pulse detection and is intended for demonstration purposes. More advanced signal processing, calibration, and validation would be required for reliable real-world measurements.
+
+The DHT11 is also a basic temperature sensor and is used here for prototype demonstration rather than clinical measurement.
 
 ## Future Improvements
 
 - GPS-based location tracking
-- More robust heart-rate signal filtering
+- Improved heart-rate signal processing and filtering
 - Battery-level monitoring
-- Data logging and historical health-data visualisation
-- Improved wearable enclosure and hardware integration through PCB design.
+- Data logging and historical health-data visualization
+- Improved wearable enclosure
 - Secure wireless communication
-- More reliable emergency communication
-- Integration of additional physiological sensors
+- Dedicated emergency notification events
 - Real-time location and health-data dashboard
+- Integration of additional physiological sensors
 
 ## Project Status
 
 **Prototype completed and tested.**
 
-The project demonstrates the integration of embedded sensing, user-input controls, local display, emergency indication, and IoT-based mobile monitoring using an ESP32.
+The project integrates embedded sensing, local user interaction, LCD-based monitoring, emergency indication, Wi-Fi connectivity, and IoT-based remote monitoring using an ESP32 and Blynk.
 
 
 https://github.com/user-attachments/assets/c94bff0c-df0c-470d-b960-dcd1813de372
